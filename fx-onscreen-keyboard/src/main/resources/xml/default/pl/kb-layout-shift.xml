@@ -32,7 +32,7 @@
 
 	<Row>
 		<Key codes="-1" keyLabel="J" keyLabelStyle=".font-fxkeyboard" keyWidth="40" modifier="true" sticky="true" />
-		<Key codes="90,379" keyLabel="Z" />
+		<Key codes="90,379,377" keyLabel="Z" />
 		<Key codes="88,377" keyLabel="X" />
 		<Key codes="67,262" keyLabel="C" />
 		<Key codes="86" keyLabel="V" />
