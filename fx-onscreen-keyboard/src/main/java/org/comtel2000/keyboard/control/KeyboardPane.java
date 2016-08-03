@@ -191,13 +191,16 @@ public class KeyboardPane extends Region implements StandardKeyCode, EventHandle
       }
     });
 
-    setOnScroll(e -> {
-      double s = getScale() + (e.getDeltaY() > 0.0d ? getScaleOffset() : -getScaleOffset());
-      if (s >= getMinScale() && s <= getMaxScale()) {
-        setScale(s);
-        e.consume();
-      }
-    });
+    boolean zoomGestureEnabled = Boolean.valueOf(System.getProperty("com.sun.javafx.gestures.zoom", "false"));
+    if (!zoomGestureEnabled) {
+        setOnScroll(e -> {
+          double s = getScale() + (e.getDeltaY() > 0.0d ? getScaleOffset() : -getScaleOffset());
+          if (s >= getMinScale() && s <= getMaxScale()) {
+            setScale(s);
+            e.consume();
+          }
+        });
+    }
   }
 
   private void setKeyboardType(boolean ctrl, boolean shift, boolean symbol) {
