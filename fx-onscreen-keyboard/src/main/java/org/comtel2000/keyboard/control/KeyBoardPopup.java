@@ -215,6 +215,10 @@ public class KeyBoardPopup extends Popup implements VkProperties {
           }
       }
 
+      if (!textNode.isEditable()) {
+          return;
+      }
+
       Bounds textNodeBounds = textNode.localToScreen(textNode.getBoundsInLocal());
       Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
       if (textNodeBounds.getMinX() + getWidth() > screenBounds.getMaxX()) {
