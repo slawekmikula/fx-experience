@@ -49,6 +49,16 @@ public class KeyBoardPopupBuilder implements Builder<KeyBoardPopup> {
     return new KeyBoardPopupBuilder();
   }
 
+  public KeyBoardPopupBuilder stickBottom(boolean enabled) {
+    kb.stickBottom(enabled);
+    return this;
+  }
+
+  public KeyBoardPopupBuilder scalingEnabled(boolean enabled) {
+    kb.scalingEnabled(enabled);
+    return this;
+  }
+
   public KeyBoardPopupBuilder layerPath(Path path) {
     kb.layerPath(path);
     return this;

@@ -45,6 +45,16 @@ public class KeyBoardBuilder implements Builder<KeyboardPane> {
     return new KeyBoardBuilder();
   }
 
+  public KeyBoardBuilder scalingEnabled(boolean enabled) {
+    kb.setScalingEnabled(enabled);
+    return this;
+  }
+
+  public KeyBoardBuilder stickBottom(boolean enabled) {
+    kb.setStickBottom(enabled);
+    return this;
+  }
+
   public KeyBoardBuilder layerPath(Path path) {
     kb.setLayerPath(path);
     return this;

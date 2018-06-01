@@ -96,6 +96,12 @@ public class KeyboardPane extends Region implements StandardKeyCode, EventHandle
   private String _keyBoardStyle = DEFAULT_CSS;
   private StringProperty keyBoardStyle;
 
+  private boolean _stickBottom;
+  private BooleanProperty stickBottom;
+
+  private boolean _scalingEnabled;
+  private BooleanProperty scalingEnabled;
+
   private boolean _cacheLayout;
   private BooleanProperty cacheLayout;
 
@@ -183,23 +189,26 @@ public class KeyboardPane extends Region implements StandardKeyCode, EventHandle
       setScaleY(getScale());
     }
 
-    setOnZoom(e -> {
-      double s = getScale() * e.getTotalZoomFactor();
-      if (s >= getMinScale() && s <= getMaxScale()) {
-        setScale(s);
-        e.consume();
-      }
-    });
+    if (isScalingEnabled() == true) {
 
-    boolean zoomGestureEnabled = Boolean.valueOf(System.getProperty("com.sun.javafx.gestures.zoom", "false"));
-    if (!zoomGestureEnabled) {
-        setOnScroll(e -> {
-          double s = getScale() + (e.getDeltaY() > 0.0d ? getScaleOffset() : -getScaleOffset());
+        setOnZoom(e -> {
+          double s = getScale() * e.getTotalZoomFactor();
           if (s >= getMinScale() && s <= getMaxScale()) {
             setScale(s);
             e.consume();
           }
         });
+
+        boolean zoomGestureEnabled = Boolean.valueOf(System.getProperty("com.sun.javafx.gestures.zoom", "false"));
+        if (!zoomGestureEnabled) {
+            setOnScroll(e -> {
+              double s = getScale() + (e.getDeltaY() > 0.0d ? getScaleOffset() : -getScaleOffset());
+              if (s >= getMinScale() && s <= getMaxScale()) {
+                setScale(s);
+                e.consume();
+              }
+            });
+        }
     }
   }
 
@@ -846,6 +855,44 @@ public class KeyboardPane extends Region implements StandardKeyCode, EventHandle
       keyBoardStyle = new SimpleStringProperty(this, "keyBoardStyle", _keyBoardStyle);
     }
     return keyBoardStyle;
+  }
+
+  public final boolean isStickBottom() {
+      return stickBottom == null ? _stickBottom : stickBottom.get();
+  }
+
+  public final void setStickBottom(boolean s) {
+      if (stickBottom == null) {
+          _stickBottom = s;
+      } else {
+          stickBottom.set(s);
+      }
+  }
+
+  public final BooleanProperty stickBottomProperty() {
+    if (stickBottom == null) {
+       stickBottom = new SimpleBooleanProperty(this, "stickBottom", _stickBottom);
+    }
+    return stickBottom;
+  }
+
+  public final boolean isScalingEnabled() {
+      return scalingEnabled == null ? _scalingEnabled : scalingEnabled.get();
+  }
+
+  public final void setScalingEnabled(boolean s) {
+      if (scalingEnabled == null) {
+          _scalingEnabled = s;
+      } else {
+          scalingEnabled.set(s);
+      }
+  }
+
+  public final BooleanProperty scalingEnabledProperty() {
+    if (scalingEnabled == null) {
+       scalingEnabled = new SimpleBooleanProperty(this, "scalingEnabled", _scalingEnabled);
+    }
+    return scalingEnabled;
   }
 
   public final boolean isCacheLayout() {

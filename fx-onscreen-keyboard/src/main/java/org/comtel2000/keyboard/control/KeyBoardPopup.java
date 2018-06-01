@@ -10,6 +10,7 @@ import com.sun.javafx.css.StyleManager;
 
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.Event;
@@ -198,7 +199,7 @@ public class KeyBoardPopup extends Popup implements VkProperties {
 
   void setVisible(final Visiblity visible, final TextInputControl textNode) {
 
-    if ((visible == Visiblity.POS || visible == Visiblity.SHOW) && textNode != null) {
+      if ((visible == Visiblity.POS || visible == Visiblity.SHOW) && textNode != null) {
       Map<String, String> vkProps = FXOK.getVkProperties(textNode);
       if (vkProps.isEmpty()) {
         getKeyBoard().setKeyboardType(KeyboardType.TEXT);
@@ -211,6 +212,7 @@ public class KeyBoardPopup extends Popup implements VkProperties {
 
       if (vkProps.containsKey(VK_HIDDEN)) {
           if (vkProps.get(VK_HIDDEN).equals(VK_HIDDEN_TRUE)) {
+              hide();
               return;
           }
       }
@@ -219,18 +221,7 @@ public class KeyBoardPopup extends Popup implements VkProperties {
           return;
       }
 
-      Bounds textNodeBounds = textNode.localToScreen(textNode.getBoundsInLocal());
-      Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-      if (textNodeBounds.getMinX() + getWidth() > screenBounds.getMaxX()) {
-        setX(screenBounds.getMaxX() - getWidth());
-      } else {
-        setX(textNodeBounds.getMinX());
-      }
-      if (textNodeBounds.getMaxY() + getHeight() > screenBounds.getMaxY()) {
-        setY(textNodeBounds.getMinY() - getHeight() - getOffset());
-      } else {
-        setY(textNodeBounds.getMaxY() + getOffset());
-      }
+      rescale(textNode);
     }
 
     if (visible == Visiblity.POS || visible == Visiblity.HIDE && !isShowing()) {
@@ -254,6 +245,42 @@ public class KeyBoardPopup extends Popup implements VkProperties {
       super.show(owner != null ? owner.getWindow() : getOwnerWindow());
     }
     animation.playFromStart();
+  }
+
+  private void rescale(final TextInputControl textNode) {
+      Bounds textNodeBounds = textNode.localToScreen(textNode.getBoundsInLocal());
+      Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+      if (keyboard.isStickBottom() && keyboard.getActiveType() != KeyboardType.NUMERIC) {
+          if (getWidth() == 0 && getHeight() == 0) {
+              // initial state, wait for layout finish
+              Platform.runLater(() -> {
+                rescale(textNode);
+              });
+          } else if (getWidth() == screenBounds.getWidth()) {
+              // do nothing, we're at right scale
+              return;
+          } else if (getWidth() != screenBounds.getWidth()) {
+              keyboard.setScale(1.0);
+              // orientation change
+              Platform.runLater(() -> {
+                keyboard.setScale(screenBounds.getWidth()/getWidth());
+                setX(0);
+                setY(screenBounds.getMaxY() - getHeight());
+              });
+          }
+      } else {
+        if (textNodeBounds.getMinX() + getWidth() > screenBounds.getMaxX()) {
+          setX(screenBounds.getMaxX() - getWidth());
+        } else {
+          setX(textNodeBounds.getMinX());
+        }
+        if (textNodeBounds.getMaxY() + getHeight() > screenBounds.getMaxY()) {
+          setY(textNodeBounds.getMinY() - getHeight() - getOffset());
+        } else {
+          setY(textNodeBounds.getMaxY() + getOffset());
+        }
+      }
   }
 
   /**
