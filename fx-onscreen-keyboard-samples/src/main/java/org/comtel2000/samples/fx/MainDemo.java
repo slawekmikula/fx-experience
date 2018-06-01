@@ -55,7 +55,7 @@ public class MainDemo extends Application implements VkProperties {
     stage.setTitle("FX FXOK (" + System.getProperty("javafx.runtime.version") + ")");
     stage.setResizable(true);
 
-    KeyBoardPopup popup = KeyBoardPopupBuilder.create().initLocale(Locale.ENGLISH).build();
+    KeyBoardPopup popup = KeyBoardPopupBuilder.create().stickBottom(true).scalingEnabled(false).initLocale(Locale.ENGLISH).build();
 
     VBox pane = new VBox(20);
 
@@ -97,6 +97,7 @@ public class MainDemo extends Application implements VkProperties {
     pane.getChildren().add(new Label("Text1 (numeric)"));
     TextField tf1 = new TextField();
     tf1.setPromptText("0-9");
+    tf1.getProperties().put(VK_HIDDEN, VK_HIDDEN_TRUE); // NOI18N
     // Currently, the vkType property supports the following values:
     // numeric, url, email, and text
     tf1.getProperties().put(VK_TYPE, "numeric");
@@ -136,8 +137,8 @@ public class MainDemo extends Application implements VkProperties {
     stage.setScene(scene);
 
     popup.addDoubleClickEventFilter(stage);
-    // popup.addFocusListener(scene);
-    popup.addGlobalFocusListener();
+    popup.addFocusListener(scene);
+    //popup.addGlobalFocusListener();
 
     stage.show();
 
