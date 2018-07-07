@@ -227,6 +227,7 @@ public class KeyBoardPopup extends Popup implements VkProperties {
     if (visible == Visiblity.POS || visible == Visiblity.HIDE && !isShowing()) {
       return;
     }
+
     if (animation != null) {
       animation.stop();
     } else {
@@ -264,9 +265,10 @@ public class KeyBoardPopup extends Popup implements VkProperties {
               keyboard.setScale(1.0);
               // orientation change
               Platform.runLater(() -> {
-                keyboard.setScale(screenBounds.getWidth()/getWidth());
+                Rectangle2D localScreenBounds = Screen.getPrimary().getVisualBounds();
+                keyboard.setScale(localScreenBounds.getWidth()/getWidth());
                 setX(0);
-                setY(screenBounds.getMaxY() - getHeight());
+                setY(localScreenBounds.getMaxY() - getHeight());
               });
           }
       } else {
